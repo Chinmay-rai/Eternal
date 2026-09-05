@@ -1,8 +1,13 @@
 /* =========================================================
-   EVENTS PAGE
+   ETERNAL AGENTS
    ========================================================= */
 
-.events-page {
+
+/* =========================================================
+   AGENTS PAGE
+   ========================================================= */
+
+.agents-page {
     padding: 28px 32px 32px;
 }
 
@@ -11,16 +16,17 @@
    CONTROLS
    ========================================================= */
 
-.events-controls {
+.agents-controls {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 20px;
 }
 
-.event-search {
-    height: 42px;
+
+.agent-search {
     width: 280px;
+    height: 42px;
 
     display: flex;
     align-items: center;
@@ -29,54 +35,67 @@
     padding: 0 13px;
 
     background: #ffffff;
+
     border: 1px solid #e3e6ea;
     border-radius: 8px;
 
     color: #8b929b;
 }
 
-.event-search span {
+
+.agent-search span {
     font-size: 20px;
 }
 
-.event-search input {
+
+.agent-search input {
     width: 100%;
+
     border: none;
     outline: none;
 
-    font-size: 13px;
     background: transparent;
+
     color: #20242a;
+
+    font-size: 13px;
 }
 
-.event-search input::placeholder {
+
+.agent-search input::placeholder {
     color: #9aa0a8;
 }
 
 
-.events-controls select {
+.agents-controls select {
     height: 42px;
 
     padding: 0 30px 0 12px;
 
+    background: #ffffff;
+
     border: 1px solid #e3e6ea;
     border-radius: 8px;
 
-    background: #ffffff;
     color: #4e555d;
 
     font-size: 13px;
+
     outline: none;
 
     cursor: pointer;
 }
 
 
-.events-controls select:focus,
-.event-search:focus-within {
+.agent-search:focus-within,
+.agents-controls select:focus {
     border-color: #c8cdd3;
 }
 
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
 
 .reset-btn,
 .refresh-btn {
@@ -85,6 +104,7 @@
     padding: 0 15px;
 
     border-radius: 8px;
+
     font-size: 13px;
 
     cursor: pointer;
@@ -94,10 +114,13 @@
 .reset-btn {
     margin-left: auto;
 
-    border: 1px solid #e3e6ea;
     background: #ffffff;
+
+    border: 1px solid #e3e6ea;
+
     color: #555c64;
 }
+
 
 .reset-btn:hover {
     background: #f7f8f9;
@@ -105,13 +128,22 @@
 
 
 .refresh-btn {
+    background: #1f2328;
+
     border: 1px solid #1f2328;
-    background: #2f343b;
+
     color: #ffffff;
 }
 
+
 .refresh-btn:hover {
     background: #30343a;
+}
+
+
+.refresh-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
 }
 
 
@@ -119,7 +151,7 @@
    TABLE CARD
    ========================================================= */
 
-.events-table-card {
+.agents-table-card {
     background: #ffffff;
 
     border: 1px solid #e5e7ea;
@@ -127,12 +159,13 @@
 
     overflow: hidden;
 
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.025);
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.025);
 }
 
 
 .table-header {
-    height: 68px;
+    height: 88px;
 
     display: flex;
     align-items: center;
@@ -142,18 +175,21 @@
     border-bottom: 1px solid #eceef0;
 }
 
-.table-header h2 {
-    margin: 0 0 3px;
 
-    font-size: 15px;
-    font-weight: 600;
+.table-header h2 {
+    margin: 0 0 5px;
 
     color: #20242a;
+
+    font-size: 16px;
+    font-weight: 600;
 }
 
+
 .table-header span {
-    font-size: 12px;
     color: #8b929b;
+
+    font-size: 12px;
 }
 
 
@@ -166,24 +202,25 @@
     overflow-x: auto;
 }
 
-.events-table {
+
+.agents-table {
     width: 100%;
     border-collapse: collapse;
 }
 
 
-.events-table th {
+.agents-table th {
     height: 44px;
 
     padding: 0 22px;
-
-    text-align: left;
 
     background: #fafbfc;
 
     border-bottom: 1px solid #e8eaed;
 
     color: #7b828a;
+
+    text-align: left;
 
     font-size: 11px;
     font-weight: 600;
@@ -193,8 +230,8 @@
 }
 
 
-.events-table td {
-    height: 58px;
+.agents-table td {
+    height: 60px;
 
     padding: 0 22px;
 
@@ -208,167 +245,137 @@
 }
 
 
-.event-row {
+.agent-row {
     cursor: pointer;
-    transition: background 0.15s ease;
+
+    transition:
+        background 0.15s ease;
 }
 
-.event-row:hover {
+
+.agent-row:hover {
     background: #fafbfc;
 }
 
-.event-row:last-child td {
+
+.agent-row.selected {
+    background: #f7f8fa;
+}
+
+
+.agent-row:last-child td {
     border-bottom: none;
 }
 
 
-.event-type {
+.agent-name {
     color: #252a30;
+
     font-weight: 500;
 }
 
 
-.row-arrow {
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.agent-status-badge {
+    display: inline-flex;
+
+    align-items: center;
+    gap: 7px;
+
+    font-size: 12px;
+}
+
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+
+    display: inline-block;
+
+    border-radius: 50%;
+
+    background: #3b9b61;
+}
+
+
+.agent-status-badge.offline .status-dot,
+.status-dot.offline {
+    background: #9aa0a8;
+}
+
+
+.status-text {
+    color: #4d555d;
+}
+
+
+.agent-status-badge.offline .status-text {
+    color: #777e86;
+}
+
+
+/* =========================================================
+   EVENT COUNT
+   ========================================================= */
+
+.event-count {
+    color: #454b52;
+
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   ARROW
+   ========================================================= */
+
+.agent-arrow {
     width: 30px;
 
     text-align: center;
 
-    font-size: 20px !important;
-    color: #a0a6ad !important;
+    color: #a0a6ad;
+
+    font-size: 20px;
 }
 
 
 /* =========================================================
-   SEVERITY
+   AGENT DRAWER
    ========================================================= */
 
-.severity {
-    display: inline-flex;
-    align-items: center;
-
-    padding: 4px 9px;
-
-    border-radius: 5px;
-
-    font-size: 11px;
-    font-weight: 600;
-}
-
-
-.severity.low {
-    background: #f1f3f5;
-    color: #59616a;
-}
-
-.severity.medium {
-    background: #f4f1e8;
-    color: #75683f;
-}
-
-.severity.high {
-    background: #f4e9e9;
-    color: #8a4b4b;
-}
-
-.severity.critical {
-    background: #eee4e4;
-    color: #722f2f;
-}
-
-
-/* =========================================================
-   PAGINATION
-   ========================================================= */
-
-.pagination {
-    height: 62px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 0 22px;
-
-    border-top: 1px solid #eceef0;
-}
-
-
-.pagination-info {
-    font-size: 12px;
-    color: #8b929b;
-}
-
-
-.pagination-buttons {
-    display: flex;
-    gap: 5px;
-}
-
-
-.pagination-buttons button {
-    width: 31px;
-    height: 31px;
-
-    border: 1px solid #e2e5e8;
-    border-radius: 6px;
-
-    background: #ffffff;
-    color: #59616a;
-
-    font-size: 12px;
-
-    cursor: pointer;
-}
-
-
-.pagination-buttons button:hover:not(:disabled) {
-    background: #f6f7f8;
-}
-
-
-.pagination-buttons button.current-page {
-    background: #20242a;
-    border-color: #20242a;
-    color: #ffffff;
-}
-
-
-.pagination-buttons button:disabled {
-    opacity: 0.4;
-    cursor: default;
-}
-
-
-/* =========================================================
-   EVENT DETAILS DRAWER
-   ========================================================= */
-
-.event-drawer {
+.agent-drawer {
     position: fixed;
 
     top: 0;
     right: 0;
 
-    width: 440px;
+    width: 400px;
     height: 100vh;
+
+    display: flex;
+    flex-direction: column;
 
     background: #ffffff;
 
     border-left: 1px solid #e2e5e8;
 
-    box-shadow: -8px 0 25px rgba(0, 0, 0, 0.08);
+    box-shadow:
+        -8px 0 25px rgba(0, 0, 0, 0.08);
 
     z-index: 1000;
 
     transform: translateX(100%);
-    transition: transform 0.25s ease;
 
-    display: flex;
-    flex-direction: column;
+    transition:
+        transform 0.25s ease;
 }
 
 
-.event-drawer.open {
+.agent-drawer.open {
     transform: translateX(0);
 }
 
@@ -381,7 +388,9 @@
     min-height: 86px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
 
     padding: 0 24px;
@@ -398,6 +407,7 @@
     color: #8a9199;
 
     font-size: 10px;
+
     font-weight: 600;
 
     letter-spacing: 0.08em;
@@ -407,10 +417,11 @@
 .drawer-header h2 {
     margin: 0;
 
-    font-size: 17px;
-    font-weight: 600;
-
     color: #20242a;
+
+    font-size: 17px;
+
+    font-weight: 600;
 }
 
 
@@ -419,6 +430,7 @@
     height: 32px;
 
     border: none;
+
     border-radius: 6px;
 
     background: transparent;
@@ -433,6 +445,7 @@
 
 .drawer-close:hover {
     background: #f3f4f5;
+
     color: #20242a;
 }
 
@@ -448,34 +461,38 @@
 }
 
 
-.drawer-severity {
-    margin-bottom: 16px;
+.agent-status {
+    display: flex;
+
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 24px;
+
+    color: #3b9b61;
+
+    font-size: 13px;
+    font-weight: 500;
 }
 
 
-.event-description {
-    padding-bottom: 22px;
-
-    border-bottom: 1px solid #eceef0;
-
-    color: #565d65;
-
-    font-size: 13px;
-    line-height: 1.6;
+.agent-status .status-dot {
+    width: 8px;
+    height: 8px;
 }
 
 
 /* =========================================================
-   DETAIL GRID
+   DETAILS
    ========================================================= */
 
-.detail-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+.agent-details {
+    border-top: 1px solid #eceef0;
+}
 
-    gap: 20px 18px;
 
-    padding: 22px 0;
+.agent-details .detail-item {
+    padding: 18px 0;
 
     border-bottom: 1px solid #eceef0;
 }
@@ -495,50 +512,9 @@
 .detail-item strong {
     color: #343a40;
 
-    font-size: 12px;
+    font-size: 13px;
+
     font-weight: 500;
-
-    word-break: break-word;
-}
-
-
-/* =========================================================
-   RAW EVENT
-   ========================================================= */
-
-.raw-event {
-    margin-top: 22px;
-}
-
-
-.raw-event-header {
-    margin-bottom: 9px;
-
-    color: #777e86;
-
-    font-size: 11px;
-    font-weight: 600;
-}
-
-
-.raw-event pre {
-    margin: 0;
-
-    padding: 15px;
-
-    background: #f7f8f9;
-
-    border: 1px solid #e7e9eb;
-    border-radius: 7px;
-
-    color: #4e555d;
-
-    font-family: monospace;
-    font-size: 11px;
-
-    line-height: 1.6;
-
-    overflow-x: auto;
 }
 
 
@@ -546,13 +522,13 @@
    RESPONSIVE
    ========================================================= */
 
-@media (max-width: 1000px) {
+@media (max-width: 800px) {
 
-    .events-controls {
+    .agents-controls {
         flex-wrap: wrap;
     }
 
-    .event-search {
+    .agent-search {
         width: 100%;
     }
 
@@ -563,22 +539,18 @@
 }
 
 
-@media (max-width: 700px) {
+@media (max-width: 600px) {
 
-    .events-page {
+    .agents-page {
         padding: 20px;
     }
 
-    .events-controls select {
-        flex: 1;
-    }
-
-    .event-drawer {
+    .agent-drawer {
         width: 100%;
     }
 
-    .events-table th,
-    .events-table td {
+    .agents-table th,
+    .agents-table td {
         padding: 0 14px;
     }
 

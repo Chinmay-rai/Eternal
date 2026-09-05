@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ETERNAL</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/agents.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- ================= SIDEBAR ================= -->
+
+        <aside class="sidebar">
+
+            <div class="logo">
+                <img src="../photos/logo.png">
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">⌂</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="events.html" class="nav-item">
+                    <span class="nav-icon">▤</span>
+                    <span>Events</span>
+                </a>
+
+                <a href="alerts.html" class="nav-item">
+                    <span class="nav-icon">⚠</span>
+                    <span>Alerts</span>
+                </a>
+
+                <a href="agents.html" class="nav-item active">
+                    <span class="nav-icon">◉</span>
+                    <span>Agents</span>
+                </a>
+
+                <a href="network.html" class="nav-item">
+                    <span class="nav-icon">⌁</span>
+                    <span>Network</span>
+                </a>
+
+                <a href="incidents.html" class="nav-item">
+                    <span class="nav-icon">◫</span>
+                    <span>Incidents</span>
+                </a>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+
+                <a href="settings.html" class="nav-item">
+                    <span class="nav-icon">⚙</span>
+                    <span>Settings</span>
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- ================= MAIN ================= -->
+
+        <main class="main">
+
+            <!-- TOP BAR -->
+
+            <header class="topbar">
+
+                <div class="page-title">
+                    <h1>Agents</h1>
+                </div>
+
+                <div class="topbar-right">
+
+                    <div class="search">
+                        <span class="search-icon">⌕</span>
+                        <input type="text" placeholder="Search..." id="global-search">
+                    </div>
+
+                    <div class="date" id="current-date"></div>
+
+                    <div class="user">
+                        <div class="user-avatar">C</div>
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- ================= AGENTS CONTENT ================= -->
+
+            <section class="agents-page">
+
+                <!-- CONTROLS -->
+
+                <div class="agents-controls">
+
+                    <div class="agent-search">
+
+                        <span>⌕</span>
+
+                        <input type="text" id="agent-search" placeholder="Search agents...">
+
+                    </div>
+
+
+                    <select id="status-filter">
+
+                        <option value="">Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Offline">Offline</option>
+
+                    </select>
+
+
+                    <button class="reset-btn" id="reset-filters">
+                        Reset
+                    </button>
+
+
+                    <button class="refresh-btn" id="refresh-agents">
+                        ↻ Refresh
+                    </button>
+
+                </div>
+
+
+                <!-- AGENTS TABLE -->
+
+                <div class="agents-table-card">
+
+                    <div class="table-header">
+
+                        <div>
+
+                            <h2>Monitored Agents</h2>
+
+                            <span id="agent-count">
+                                2 agents
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="table-wrapper">
+
+                        <table class="agents-table">
+
+                            <thead>
+
+                                <tr>
+                                    <th>Agent</th>
+                                    <th>Status</th>
+                                    <th>IP Address</th>
+                                    <th>Last Communication</th>
+                                    <th>Events</th>
+                                    <th></th>
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="agents-table-body">
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- ================= AGENT DETAILS DRAWER ================= -->
+
+    <aside class="agent-drawer" id="agent-drawer">
+
+        <div class="drawer-header">
+
+            <div>
+
+                <span class="drawer-label">
+                    AGENT DETAILS
+                </span>
+
+                <h2 id="drawer-agent-name">
+                    Linux-VM-01
+                </h2>
+
+            </div>
+
+
+            <button class="drawer-close" id="drawer-close">
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="drawer-content">
+
+            <div class="agent-status">
+
+                <span class="status-dot" id="drawer-status-dot">
+                </span>
+
+                <span id="drawer-status">
+                    Active
+                </span>
+
+            </div>
+
+
+            <div class="agent-details">
+
+                <div class="detail-item">
+
+                    <span>Agent Name</span>
+
+                    <strong id="detail-name"></strong>
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span>IP Address</span>
+
+                    <strong id="detail-ip"></strong>
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span>Last Communication</span>
+
+                    <strong id="detail-last-communication"></strong>
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span>Events</span>
+
+                    <strong id="detail-events"></strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- JavaScript -->
+
+    <script src="../js/script.js"></script>
+    <script src="../js/agents.js"></script>
+
+</body>
+
+</html>

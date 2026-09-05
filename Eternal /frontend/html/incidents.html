@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ETERNAL</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/incidents.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <aside class="sidebar">
+
+            <div class="logo">
+                <img src="../photos/logo.png">
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">⌂</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="events.html" class="nav-item">
+                    <span class="nav-icon">▤</span>
+                    <span>Events</span>
+                </a>
+
+                <a href="alerts.html" class="nav-item">
+                    <span class="nav-icon">⚠</span>
+                    <span>Alerts</span>
+                </a>
+
+                <a href="agents.html" class="nav-item">
+                    <span class="nav-icon">◉</span>
+                    <span>Agents</span>
+                </a>
+
+                <a href="network.html" class="nav-item">
+                    <span class="nav-icon">⌁</span>
+                    <span>Network</span>
+                </a>
+
+                <a href="incidents.html" class="nav-item active">
+                    <span class="nav-icon">◫</span>
+                    <span>Incidents</span>
+                </a>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+
+                <a href="settings.html" class="nav-item">
+                    <span class="nav-icon">⚙</span>
+                    <span>Settings</span>
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <main class="main">
+
+            <header class="topbar">
+
+                <div class="page-title">
+                    <h1>Incidents</h1>
+                </div>
+
+                <div class="topbar-right">
+
+                    <div class="search">
+                        <span class="search-icon">⌕</span>
+                        <input type="text" placeholder="Search..." id="global-search">
+                    </div>
+
+                    <div class="date" id="current-date"></div>
+
+                    <div class="user">
+                        <div class="user-avatar">C</div>
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <section class="incidents-content">
+
+                <!-- Filters -->
+
+                <div class="incident-controls">
+
+                    <div class="incident-search">
+                        <span>⌕</span>
+                        <input type="text" id="incident-search" placeholder="Search incidents...">
+                    </div>
+
+                    <select id="severity-filter">
+                        <option value="">All Severity</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+
+                    <select id="status-filter">
+                        <option value="">All Status</option>
+                        <option value="Open">Open</option>
+                        <option value="Investigating">Investigating</option>
+                        <option value="Resolved">Resolved</option>
+                    </select>
+
+                    <button id="reset-filters" class="secondary-button">
+                        Reset
+                    </button>
+
+                    <button id="refresh-incidents" class="primary-button">
+                        Refresh
+                    </button>
+
+                </div>
+
+
+                <!-- Incident Table -->
+
+                <div class="incidents-card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h2>Security Incidents</h2>
+                            <p>Investigations created from related security activity</p>
+                        </div>
+
+                        <span id="incident-count" class="incident-count">
+                            0 incidents
+                        </span>
+
+                    </div>
+
+
+                    <div class="table-container">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Incident</th>
+                                    <th>Severity</th>
+                                    <th>Agent</th>
+                                    <th>Alerts</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="incidents-table-body"></tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Incident Details Drawer -->
+
+            <aside class="incident-drawer" id="incident-drawer">
+
+                <div class="drawer-header">
+
+                    <div>
+                        <span class="drawer-label">INCIDENT DETAILS</span>
+                        <h2 id="drawer-title">Incident</h2>
+                    </div>
+
+                    <button id="drawer-close" class="drawer-close">
+                        ×
+                    </button>
+
+                </div>
+
+
+                <div class="drawer-content">
+
+                    <div class="incident-meta">
+
+                        <div class="meta-item">
+                            <span>Incident ID</span>
+                            <strong id="drawer-id">—</strong>
+                        </div>
+
+                        <div class="meta-item">
+                            <span>Severity</span>
+                            <strong id="drawer-severity">—</strong>
+                        </div>
+
+                        <div class="meta-item">
+                            <span>Status</span>
+                            <strong id="drawer-status">—</strong>
+                        </div>
+
+                        <div class="meta-item">
+                            <span>Agent</span>
+                            <strong id="drawer-agent">—</strong>
+                        </div>
+
+                        <div class="meta-item">
+                            <span>First Seen</span>
+                            <strong id="drawer-first-seen">—</strong>
+                        </div>
+
+                        <div class="meta-item">
+                            <span>Last Seen</span>
+                            <strong id="drawer-last-seen">—</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="drawer-section">
+
+                        <h3>Description</h3>
+
+                        <p id="drawer-description">
+                            —
+                        </p>
+
+                    </div>
+
+
+                    <div class="drawer-section">
+
+                        <h3>Related Alerts</h3>
+
+                        <div id="related-alerts" class="related-alerts"></div>
+
+                    </div>
+
+
+                    <div class="drawer-section">
+
+                        <h3>Incident Timeline</h3>
+
+                        <div id="incident-timeline" class="incident-timeline"></div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="drawer-actions">
+
+                    <button id="investigate-button" class="secondary-button">
+                        Mark Investigating
+                    </button>
+
+                    <button id="resolve-button" class="resolve-button">
+                        Resolve
+                    </button>
+
+                </div>
+
+            </aside>
+
+        </main>
+
+    </div>
+
+
+    <script src="../js/script.js"></script>
+    <script src="../js/incidents.js"></script>
+
+</body>
+
+</html>
