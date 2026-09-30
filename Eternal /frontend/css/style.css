@@ -77,8 +77,8 @@ body {
 }
 
 .logo img {
-    width: 170px;
-    height: 85px;
+    width: 150px;
+    height: 55px;
     object-fit: cover;
     object-position: center;
 }

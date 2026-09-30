@@ -14,6 +14,17 @@
 
 <body>
 
+    <style>
+    #loader-placeholder {
+        position: fixed;
+        inset: 0;
+        background: #000;
+        z-index: 999999;
+    }
+</style>
+
+<div id="loader-placeholder"></div>
+
     <div class="app">
 
         <!-- ================= SIDEBAR ================= -->
@@ -109,10 +120,12 @@
 
                 <div class="stats-grid">
 
-                    <div class="stat-card">
-                        <span class="stat-label">Total Events</span>
-                        <h2 class="stat-value">12,482</h2>
-                    </div>
+                    <a href="events.html" class="stat-card-link">
+                        <div class="stat-card">
+                            <span class="stat-label">Total Events</span>
+                            <h2 class="stat-value">12,482</h2>
+                        </div>
+                    </a>    
 
                     <a href="alerts.html" class="stat-card-link">
                         <div class="stat-card">

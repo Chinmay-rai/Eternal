@@ -1,61 +1,40 @@
-/* =========================================================
-   ETERNAL LOADER — ONCE PER SESSION
-========================================================= */
-
 document.addEventListener("DOMContentLoaded", () => {
 
     const loaderShown =
         sessionStorage.getItem("eternalLoaderShown");
 
-    /* If already shown during this session, do nothing */
+    const placeholder =
+        document.getElementById("loader-placeholder");
+
+
+    /* Already shown this session */
+
     if (loaderShown) {
+
+        placeholder.remove();
+
         return;
+
     }
 
-    /* Mark it as shown */
+
     sessionStorage.setItem(
         "eternalLoaderShown",
         "true"
     );
 
 
-    /* Load the loader */
     fetch("loading.html")
-        .then(response => {
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Could not load loading.html: " +
-                    response.status
-                );
-
-            }
-
-            return response.text();
-
-        })
+        .then(response => response.text())
 
         .then(html => {
 
-            document.body.insertAdjacentHTML(
-                "afterbegin",
-                html
-            );
+            placeholder.outerHTML = html;
 
             const loader =
                 document.getElementById("eternal-loader");
 
-            if (!loader) {
-
-                throw new Error(
-                    "ETERNAL loader element not found."
-                );
-
-            }
-
-
-            /* Start fade after 8.5 seconds */
+            /* Your existing timers continue here... */
 
             setTimeout(() => {
 
@@ -66,8 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             }, 6000);
 
-
-            /* Remove completely */
 
             setTimeout(() => {
 
@@ -85,6 +62,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 "ETERNAL LOADER ERROR:",
                 error
             );
+
+            placeholder.remove();
 
         });
 

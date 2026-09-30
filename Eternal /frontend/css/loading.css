@@ -147,6 +147,8 @@
 
     color: black;
 
+    font-family: monospace;
+
     font-size: clamp(15px, 2vw, 30px);
 
     font-weight: 700;
@@ -450,7 +452,6 @@
 
     }
 }
-
 
 /* =========================================================
    MOBILE
