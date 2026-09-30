@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ETERNAL</title>
+
+    <link rel="stylesheet" href="../css/loading.css">
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+    <style>
+    #loader-placeholder {
+        position: fixed;
+        inset: 0;
+        background: #000;
+        z-index: 999999;
+    }
+</style>
+
+<div id="loader-placeholder"></div>
+
+    <div class="app">
+
+        <!-- ================= SIDEBAR ================= -->
+
+        <aside class="sidebar">
+
+            <div class="logo">
+                <img src="../photos/logo.png">
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <a href="index.html" class="nav-item active">
+                    <span class="nav-icon">⌂</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="events.html" class="nav-item">
+                    <span class="nav-icon">▤</span>
+                    <span>Events</span>
+                </a>
+
+                <a href="alerts.html" class="nav-item">
+                    <span class="nav-icon">⚠</span>
+                    <span>Alerts</span>
+                </a>
+
+                <a href="agents.html" class="nav-item">
+                    <span class="nav-icon">◉</span>
+                    <span>Agents</span>
+                </a>
+
+                <a href="network.html" class="nav-item">
+                    <span class="nav-icon">⌁</span>
+                    <span>Network</span>
+                </a>
+
+                <a href="incidents.html" class="nav-item">
+                    <span class="nav-icon">◫</span>
+                    <span>Incidents</span>
+                </a>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+
+                <a href="settings.html" class="nav-item">
+                    <span class="nav-icon">⚙</span>
+                    <span>Settings</span>
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- ================= MAIN ================= -->
+
+        <main class="main">
+
+            <!-- TOP BAR -->
+
+            <header class="topbar">
+
+                <div class="page-title">
+                    <h1>Security Overview</h1>
+                </div>
+
+                <div class="topbar-right">
+
+                    <div class="search">
+                        <span class="search-icon">⌕</span>
+                        <input type="text" placeholder="Search..." id="global-search">
+                    </div>
+
+                    <div class="date" id="current-date"></div>
+
+                    <div class="user">
+                        <div class="user-avatar">C</div>
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- DASHBOARD CONTENT -->
+
+            <section class="dashboard-content">
+
+
+                <!-- ================= KPI CARDS ================= -->
+
+                <div class="stats-grid">
+
+                    <a href="events.html" class="stat-card-link">
+                        <div class="stat-card">
+                            <span class="stat-label">Total Events</span>
+                            <h2 class="stat-value">12,482</h2>
+                        </div>
+                    </a>    
+
+                    <a href="alerts.html" class="stat-card-link">
+                        <div class="stat-card">
+                            <span class="stat-label">Active Alerts</span>
+                            <h2 class="stat-value">37</h2>
+                        </div>
+                    </a>
+
+                    <a href="agents.html" class="stat-card-link">
+                        <div class="stat-card">
+                            <span class="stat-label">Active Agents</span>
+                            <h2 class="stat-value">1</h2>
+                        </div>
+                    </a>
+
+                    <div class="stat-card">
+                        <span class="stat-label">Critical Threats</span>
+                        <h2 class="stat-value">2</h2>
+                    </div>
+
+                </div>
+
+
+                <!-- ================= CHARTS ================= -->
+
+                <div class="analytics-grid">
+
+
+                    <!-- EVENTS OVER TIME -->
+
+                    <div class="card events-chart-card">
+
+                        <div class="card-header">
+                            <h2>Events Over Time</h2>
+
+                            <select id="event-range">
+                                <option value="24h">Last 24 Hours</option>
+                                <option value="7d">Last 7 Days</option>
+                                <option value="30d">Last 30 Days</option>
+                            </select>
+                        </div>
+
+                        <div class="chart-container">
+                            <canvas id="events-chart"></canvas>
+                        </div>
+
+                    </div>
+
+
+                    <!-- ALERT SEVERITY -->
+
+                    <div class="card severity-card">
+
+                        <div class="card-header">
+                            <h2>Alert Severity</h2>
+                        </div>
+
+                        <div class="severity-content">
+
+                            <div class="severity-chart">
+                                <canvas id="severity-chart"></canvas>
+                            </div>
+
+                            <div class="severity-legend">
+
+                                <div class="legend-item">
+                                    <span class="legend-dot critical"></span>
+                                    <span>Critical</span>
+                                    <strong>2</strong>
+                                </div>
+
+                                <div class="legend-item">
+                                    <span class="legend-dot high"></span>
+                                    <span>High</span>
+                                    <strong>6</strong>
+                                </div>
+
+                                <div class="legend-item">
+                                    <span class="legend-dot medium"></span>
+                                    <span>Medium</span>
+                                    <strong>18</strong>
+                                </div>
+
+                                <div class="legend-item">
+                                    <span class="legend-dot low"></span>
+                                    <span>Low</span>
+                                    <strong>11</strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================= RECENT EVENTS ================= -->
+
+                <div class="card events-card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h2>Recent Security Events</h2>
+                        </div>
+
+                        <a href="events.html"><button class="view-all">
+                                View All →
+                            </button></a>
+
+                    </div>
+
+
+                    <div class="table-wrapper">
+
+                        <table class="events-table">
+
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Event Type</th>
+                                    <th>Source IP</th>
+                                    <th>Username</th>
+                                    <th>Severity</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="events-table-body">
+
+                                <tr>
+                                    <td>22:42:17</td>
+                                    <td>SSH_LOGIN_FAILED</td>
+                                    <td>192.168.56.103</td>
+                                    <td>root</td>
+                                    <td>
+                                        <span class="severity-badge high">
+                                            High
+                                        </span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>22:41:53</td>
+                                    <td>SSH_LOGIN_FAILED</td>
+                                    <td>192.168.56.103</td>
+                                    <td>admin</td>
+                                    <td>
+                                        <span class="severity-badge high">
+                                            High
+                                        </span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>22:40:31</td>
+                                    <td>FILE_MODIFIED</td>
+                                    <td>192.168.56.101</td>
+                                    <td>chinmay</td>
+                                    <td>
+                                        <span class="severity-badge medium">
+                                            Medium
+                                        </span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>22:38:12</td>
+                                    <td>PROCESS_EXECUTION</td>
+                                    <td>192.168.56.101</td>
+                                    <td>user</td>
+                                    <td>
+                                        <span class="severity-badge low">
+                                            Low
+                                        </span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>22:35:47</td>
+                                    <td>SSH_LOGIN_SUCCESS</td>
+                                    <td>192.168.56.103</td>
+                                    <td>root</td>
+                                    <td>
+                                        <span class="severity-badge high">
+                                            High
+                                        </span>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- JavaScript -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/loading.js"></script>
+
+</body>
+
+</html>

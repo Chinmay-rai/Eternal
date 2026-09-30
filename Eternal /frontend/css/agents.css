@@ -1,0 +1,557 @@
+/* =========================================================
+   ETERNAL AGENTS
+   ========================================================= */
+
+
+/* =========================================================
+   AGENTS PAGE
+   ========================================================= */
+
+.agents-page {
+    padding: 28px 32px 32px;
+}
+
+
+/* =========================================================
+   CONTROLS
+   ========================================================= */
+
+.agents-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+
+.agent-search {
+    width: 280px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 0 13px;
+
+    background: #ffffff;
+
+    border: 1px solid #e3e6ea;
+    border-radius: 8px;
+
+    color: #8b929b;
+}
+
+
+.agent-search span {
+    font-size: 20px;
+}
+
+
+.agent-search input {
+    width: 100%;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: #20242a;
+
+    font-size: 13px;
+}
+
+
+.agent-search input::placeholder {
+    color: #9aa0a8;
+}
+
+
+.agents-controls select {
+    height: 42px;
+
+    padding: 0 30px 0 12px;
+
+    background: #ffffff;
+
+    border: 1px solid #e3e6ea;
+    border-radius: 8px;
+
+    color: #4e555d;
+
+    font-size: 13px;
+
+    outline: none;
+
+    cursor: pointer;
+}
+
+
+.agent-search:focus-within,
+.agents-controls select:focus {
+    border-color: #c8cdd3;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.reset-btn,
+.refresh-btn {
+    height: 42px;
+
+    padding: 0 15px;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+    cursor: pointer;
+}
+
+
+.reset-btn {
+    margin-left: auto;
+
+    background: #ffffff;
+
+    border: 1px solid #e3e6ea;
+
+    color: #555c64;
+}
+
+
+.reset-btn:hover {
+    background: #f7f8f9;
+}
+
+
+.refresh-btn {
+    background: #1f2328;
+
+    border: 1px solid #1f2328;
+
+    color: #ffffff;
+}
+
+
+.refresh-btn:hover {
+    background: #30343a;
+}
+
+
+.refresh-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+
+/* =========================================================
+   TABLE CARD
+   ========================================================= */
+
+.agents-table-card {
+    background: #ffffff;
+
+    border: 1px solid #e5e7ea;
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.025);
+}
+
+
+.table-header {
+    height: 88px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 22px;
+
+    border-bottom: 1px solid #eceef0;
+}
+
+
+.table-header h2 {
+    margin: 0 0 5px;
+
+    color: #20242a;
+
+    font-size: 16px;
+    font-weight: 600;
+}
+
+
+.table-header span {
+    color: #8b929b;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+
+.agents-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+
+.agents-table th {
+    height: 44px;
+
+    padding: 0 22px;
+
+    background: #fafbfc;
+
+    border-bottom: 1px solid #e8eaed;
+
+    color: #7b828a;
+
+    text-align: left;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+
+.agents-table td {
+    height: 60px;
+
+    padding: 0 22px;
+
+    border-bottom: 1px solid #f0f1f3;
+
+    color: #454b52;
+
+    font-size: 13px;
+
+    white-space: nowrap;
+}
+
+
+.agent-row {
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease;
+}
+
+
+.agent-row:hover {
+    background: #fafbfc;
+}
+
+
+.agent-row.selected {
+    background: #f7f8fa;
+}
+
+
+.agent-row:last-child td {
+    border-bottom: none;
+}
+
+
+.agent-name {
+    color: #252a30;
+
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.agent-status-badge {
+    display: inline-flex;
+
+    align-items: center;
+    gap: 7px;
+
+    font-size: 12px;
+}
+
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+
+    display: inline-block;
+
+    border-radius: 50%;
+
+    background: #3b9b61;
+}
+
+
+.agent-status-badge.offline .status-dot,
+.status-dot.offline {
+    background: #9aa0a8;
+}
+
+
+.status-text {
+    color: #4d555d;
+}
+
+
+.agent-status-badge.offline .status-text {
+    color: #777e86;
+}
+
+
+/* =========================================================
+   EVENT COUNT
+   ========================================================= */
+
+.event-count {
+    color: #454b52;
+
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   ARROW
+   ========================================================= */
+
+.agent-arrow {
+    width: 30px;
+
+    text-align: center;
+
+    color: #a0a6ad;
+
+    font-size: 20px;
+}
+
+
+/* =========================================================
+   AGENT DRAWER
+   ========================================================= */
+
+.agent-drawer {
+    position: fixed;
+
+    top: 0;
+    right: 0;
+
+    width: 400px;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    background: #ffffff;
+
+    border-left: 1px solid #e2e5e8;
+
+    box-shadow:
+        -8px 0 25px rgba(0, 0, 0, 0.08);
+
+    z-index: 1000;
+
+    transform: translateX(100%);
+
+    transition:
+        transform 0.25s ease;
+}
+
+
+.agent-drawer.open {
+    transform: translateX(0);
+}
+
+
+/* =========================================================
+   DRAWER HEADER
+   ========================================================= */
+
+.drawer-header {
+    min-height: 86px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 24px;
+
+    border-bottom: 1px solid #e8eaed;
+}
+
+
+.drawer-label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #8a9199;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.08em;
+}
+
+
+.drawer-header h2 {
+    margin: 0;
+
+    color: #20242a;
+
+    font-size: 17px;
+
+    font-weight: 600;
+}
+
+
+.drawer-close {
+    width: 32px;
+    height: 32px;
+
+    border: none;
+
+    border-radius: 6px;
+
+    background: transparent;
+
+    color: #777e86;
+
+    font-size: 24px;
+
+    cursor: pointer;
+}
+
+
+.drawer-close:hover {
+    background: #f3f4f5;
+
+    color: #20242a;
+}
+
+
+/* =========================================================
+   DRAWER CONTENT
+   ========================================================= */
+
+.drawer-content {
+    padding: 24px;
+
+    overflow-y: auto;
+}
+
+
+.agent-status {
+    display: flex;
+
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 24px;
+
+    color: #3b9b61;
+
+    font-size: 13px;
+    font-weight: 500;
+}
+
+
+.agent-status .status-dot {
+    width: 8px;
+    height: 8px;
+}
+
+
+/* =========================================================
+   DETAILS
+   ========================================================= */
+
+.agent-details {
+    border-top: 1px solid #eceef0;
+}
+
+
+.agent-details .detail-item {
+    padding: 18px 0;
+
+    border-bottom: 1px solid #eceef0;
+}
+
+
+.detail-item span {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #8a9199;
+
+    font-size: 11px;
+}
+
+
+.detail-item strong {
+    color: #343a40;
+
+    font-size: 13px;
+
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+    .agents-controls {
+        flex-wrap: wrap;
+    }
+
+    .agent-search {
+        width: 100%;
+    }
+
+    .reset-btn {
+        margin-left: 0;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .agents-page {
+        padding: 20px;
+    }
+
+    .agent-drawer {
+        width: 100%;
+    }
+
+    .agents-table th,
+    .agents-table td {
+        padding: 0 14px;
+    }
+
+}
