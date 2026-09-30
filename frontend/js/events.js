@@ -140,7 +140,7 @@ let filteredEvents = [...events];
 
 let currentPage = 1;
 
-const eventsPerPage = 10;
+const eventsPerPage = 6;
 
 let selectedEvent = null;
 
@@ -149,56 +149,29 @@ let selectedEvent = null;
    DOM ELEMENTS
 ===================================================== */
 
-const tableBody =
-    document.getElementById("eventsTableBody");
+const tableBody = document.getElementById("events-table-body");
 
-const eventCount =
-    document.getElementById("eventCount");
+const eventCount = document.getElementById("event-count");
 
-const searchInput =
-    document.getElementById("eventSearch");
+const searchInput = document.getElementById("event-search");
 
-const typeFilter =
-    document.getElementById("eventTypeFilter");
+const typeFilter = document.getElementById("event-type-filter");
 
-const severityFilter =
-    document.getElementById("severityFilter");
+const severityFilter = document.getElementById("severity-filter");
 
-const agentFilter =
-    document.getElementById("agentFilter");
+const agentFilter = document.getElementById("agent-filter");
 
-const timeFilter =
-    document.getElementById("timeFilter");
+const timeFilter = document.getElementById("time-filter");
 
-const resetBtn =
-    document.getElementById("resetBtn");
+const resetBtn = document.getElementById("reset-filters");
 
-const refreshBtn =
-    document.getElementById("refreshBtn");
+const refreshBtn = document.getElementById("refresh-events");
 
-const prevPage =
-    document.getElementById("prevPage");
+const drawer = document.getElementById("event-drawer");
 
-const nextPage =
-    document.getElementById("nextPage");
+const drawerClose = document.getElementById("drawer-close");
 
-const pageNumbers =
-    document.getElementById("pageNumbers");
-
-const paginationInfo =
-    document.getElementById("paginationInfo");
-
-const drawer =
-    document.getElementById("eventDrawer");
-
-const drawerContent =
-    document.getElementById("drawerContent");
-
-const closeDrawer =
-    document.getElementById("closeDrawer");
-
-const drawerOverlay =
-    document.getElementById("drawerOverlay");
+const drawerContent = document.querySelector(".drawer-content");
 
 
 /* =====================================================
@@ -209,25 +182,21 @@ function renderEvents() {
 
     tableBody.innerHTML = "";
 
-    const start =
-        (currentPage - 1) * eventsPerPage;
+    const start = (currentPage - 1) * eventsPerPage;
 
-    const end =
-        start + eventsPerPage;
+    const end = start + eventsPerPage;
 
-    const pageEvents =
-        filteredEvents.slice(start, end);
+    const pageEvents = filteredEvents.slice(start, end);
 
 
     pageEvents.forEach(event => {
 
-        const row =
-            document.createElement("tr");
+        const row = document.createElement("tr");
 
-        if (
-            selectedEvent &&
-            selectedEvent.id === event.id
-        ) {
+        row.classList.add("event-row");
+
+
+        if (selectedEvent && selectedEvent.id === event.id) {
             row.classList.add("selected");
         }
 
@@ -237,7 +206,7 @@ function renderEvents() {
             <td>${event.time}</td>
 
             <td>
-                <strong>${event.type}</strong>
+                <span class="event-type">${event.type}</span>
             </td>
 
             <td>${event.agent}</td>
@@ -252,12 +221,12 @@ function renderEvents() {
                 </span>
             </td>
 
-            <td>
-                <span class="row-arrow">›</span>
-            </td>
+            <td class="row-arrow">›</td>
 
         `;
 
+
+        /* Open drawer */
 
         row.addEventListener("click", () => {
 
@@ -275,9 +244,9 @@ function renderEvents() {
     });
 
 
-    updatePagination();
-
     updateEventCount();
+
+    updatePagination();
 
 }
 
@@ -289,7 +258,7 @@ function renderEvents() {
 function updateEventCount() {
 
     eventCount.textContent =
-        `${filteredEvents.length} events found`;
+        `${filteredEvents.length} events`;
 
 }
 
@@ -301,9 +270,7 @@ function updateEventCount() {
 function filterEvents() {
 
     const search =
-        searchInput.value
-            .toLowerCase()
-            .trim();
+        searchInput.value.toLowerCase().trim();
 
     const type =
         typeFilter.value;
@@ -315,46 +282,48 @@ function filterEvents() {
         agentFilter.value;
 
 
-    filteredEvents =
-        events.filter(event => {
+    filteredEvents = events.filter(event => {
 
-            const matchesSearch =
-                !search ||
-                event.type.toLowerCase().includes(search) ||
-                event.sourceIP.toLowerCase().includes(search) ||
-                event.username.toLowerCase().includes(search) ||
-                event.description.toLowerCase().includes(search) ||
-                event.id.toLowerCase().includes(search);
-
-
-            const matchesType =
-                type === "all" ||
-                event.type === type;
+        const matchesSearch =
+            !search ||
+            event.type.toLowerCase().includes(search) ||
+            event.agent.toLowerCase().includes(search) ||
+            event.sourceIP.toLowerCase().includes(search) ||
+            event.username.toLowerCase().includes(search) ||
+            event.description.toLowerCase().includes(search) ||
+            event.id.toLowerCase().includes(search);
 
 
-            const matchesSeverity =
-                severity === "all" ||
-                event.severity === severity;
+        const matchesType =
+            !type ||
+            event.type === type;
 
 
-            const matchesAgent =
-                agent === "all" ||
-                event.agent === agent;
+        const matchesSeverity =
+            !severity ||
+            event.severity === severity;
 
 
-            return (
-                matchesSearch &&
-                matchesType &&
-                matchesSeverity &&
-                matchesAgent
-            );
+        const matchesAgent =
+            !agent ||
+            event.agent === agent;
 
-        });
+
+        return (
+            matchesSearch &&
+            matchesType &&
+            matchesSeverity &&
+            matchesAgent
+        );
+
+    });
 
 
     currentPage = 1;
 
     selectedEvent = null;
+
+    closeDrawer();
 
     renderEvents();
 
@@ -371,15 +340,17 @@ function updatePagination() {
         Math.max(
             1,
             Math.ceil(
-                filteredEvents.length /
-                eventsPerPage
+                filteredEvents.length / eventsPerPage
             )
         );
 
 
-    if (currentPage > totalPages) {
-        currentPage = totalPages;
-    }
+    const paginationInfo =
+        document.querySelector(".pagination-info");
+
+
+    const paginationButtons =
+        document.querySelector(".pagination-buttons");
 
 
     const start =
@@ -396,65 +367,24 @@ function updatePagination() {
 
 
     paginationInfo.textContent =
-        `Showing ${start}–${end} of ${filteredEvents.length}`;
+        `Showing ${start}–${end} of ${filteredEvents.length} events`;
 
 
-    prevPage.disabled =
+    paginationButtons.innerHTML = "";
+
+
+    /* Previous */
+
+    const previousButton =
+        document.createElement("button");
+
+    previousButton.textContent = "‹";
+
+    previousButton.disabled =
         currentPage === 1;
 
-    nextPage.disabled =
-        currentPage === totalPages;
 
-
-    pageNumbers.innerHTML = "";
-
-
-    for (
-        let i = 1;
-        i <= totalPages;
-        i++
-    ) {
-
-        const button =
-            document.createElement("button");
-
-        button.className =
-            "page-number";
-
-        button.textContent = i;
-
-
-        if (i === currentPage) {
-            button.classList.add("active");
-        }
-
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                currentPage = i;
-
-                renderEvents();
-
-            }
-        );
-
-
-        pageNumbers.appendChild(button);
-
-    }
-
-}
-
-
-/* =====================================================
-   PREVIOUS / NEXT
-===================================================== */
-
-prevPage.addEventListener(
-    "click",
-    () => {
+    previousButton.addEventListener("click", () => {
 
         if (currentPage > 1) {
 
@@ -464,20 +394,53 @@ prevPage.addEventListener(
 
         }
 
+    });
+
+
+    paginationButtons.appendChild(previousButton);
+
+
+    /* Page numbers */
+
+    for (let i = 1; i <= totalPages; i++) {
+
+        const button =
+            document.createElement("button");
+
+        button.textContent = i;
+
+
+        if (i === currentPage) {
+            button.classList.add("current-page");
+        }
+
+
+        button.addEventListener("click", () => {
+
+            currentPage = i;
+
+            renderEvents();
+
+        });
+
+
+        paginationButtons.appendChild(button);
+
     }
-);
 
 
-nextPage.addEventListener(
-    "click",
-    () => {
+    /* Next */
 
-        const totalPages =
-            Math.ceil(
-                filteredEvents.length /
-                eventsPerPage
-            );
+    const nextButton =
+        document.createElement("button");
 
+    nextButton.textContent = "›";
+
+    nextButton.disabled =
+        currentPage === totalPages;
+
+
+    nextButton.addEventListener("click", () => {
 
         if (currentPage < totalPages) {
 
@@ -487,136 +450,87 @@ nextPage.addEventListener(
 
         }
 
-    }
-);
+    });
+
+
+    paginationButtons.appendChild(nextButton);
+
+}
 
 
 /* =====================================================
-   DRAWER
+   EVENT DRAWER
 ===================================================== */
 
 function openDrawer(event) {
 
     drawerContent.innerHTML = `
 
-        <div class="drawer-event-type">
-            ${event.type}
-        </div>
+        <div class="drawer-severity">
 
-        <span class="severity ${event.severity.toLowerCase()}">
-            ${event.severity}
-        </span>
-
-        <div class="drawer-description">
-            ${event.description}
-        </div>
-
-
-        <div class="detail-item">
-
-            <div class="detail-label">
-                Event ID
-            </div>
-
-            <div class="detail-value">
-                ${event.id}
-            </div>
-
-        </div>
-
-
-        <div class="detail-item">
-
-            <div class="detail-label">
-                Timestamp
-            </div>
-
-            <div class="detail-value">
-                ${event.timestamp}
-            </div>
-
-        </div>
-
-
-        <div class="detail-item">
-
-            <div class="detail-label">
-                Agent
-            </div>
-
-            <div class="detail-value">
-                ${event.agent}
-            </div>
-
-        </div>
-
-
-        <div class="detail-item">
-
-            <div class="detail-label">
-                Source IP
-            </div>
-
-            <div class="detail-value">
-                ${event.sourceIP}
-            </div>
-
-        </div>
-
-
-        <div class="detail-item">
-
-            <div class="detail-label">
-                Username
-            </div>
-
-            <div class="detail-value">
-                ${event.username}
-            </div>
-
-        </div>
-
-
-        <div class="detail-item">
-
-            <div class="detail-label">
-                Event Type
-            </div>
-
-            <div class="detail-value">
-                ${event.type}
-            </div>
-
-        </div>
-
-
-        <div class="detail-item">
-
-            <div class="detail-label">
-                Severity
-            </div>
-
-            <div class="detail-value">
+            <span class="severity ${event.severity.toLowerCase()}">
                 ${event.severity}
+            </span>
+
+        </div>
+
+
+        <div class="event-description">
+
+            ${event.description}
+
+        </div>
+
+
+        <div class="detail-grid">
+
+            <div class="detail-item">
+                <span>Event ID</span>
+                <strong>${event.id}</strong>
+            </div>
+
+            <div class="detail-item">
+                <span>Timestamp</span>
+                <strong>${event.timestamp}</strong>
+            </div>
+
+            <div class="detail-item">
+                <span>Agent</span>
+                <strong>${event.agent}</strong>
+            </div>
+
+            <div class="detail-item">
+                <span>Source IP</span>
+                <strong>${event.sourceIP}</strong>
+            </div>
+
+            <div class="detail-item">
+                <span>Username</span>
+                <strong>${event.username}</strong>
+            </div>
+
+            <div class="detail-item">
+                <span>Event Type</span>
+                <strong>${event.type}</strong>
             </div>
 
         </div>
 
 
-        <div class="raw-data-title">
-            Raw Event Data
-        </div>
+        <div class="raw-event">
 
-        <div class="raw-data">
-${JSON.stringify(event, null, 2)}
+            <div class="raw-event-header">
+                Raw Event Data
+            </div>
+
+            <pre>${JSON.stringify(event, null, 2)}</pre>
+
         </div>
 
     `;
 
 
     drawer.classList.add("open");
-
-    drawerOverlay.classList.add("active");
 
 }
 
@@ -625,33 +539,21 @@ ${JSON.stringify(event, null, 2)}
    CLOSE DRAWER
 ===================================================== */
 
-function closeEventDrawer() {
+function closeDrawer() {
 
     drawer.classList.remove("open");
-
-    drawerOverlay.classList.remove("active");
-
-    selectedEvent = null;
-
-    renderEvents();
 
 }
 
 
-closeDrawer.addEventListener(
+drawerClose.addEventListener(
     "click",
-    closeEventDrawer
-);
-
-
-drawerOverlay.addEventListener(
-    "click",
-    closeEventDrawer
+    closeDrawer
 );
 
 
 /* =====================================================
-   SEARCH + FILTER EVENTS
+   SEARCH + FILTERS
 ===================================================== */
 
 searchInput.addEventListener(
@@ -659,24 +561,42 @@ searchInput.addEventListener(
     filterEvents
 );
 
+
 typeFilter.addEventListener(
     "change",
     filterEvents
 );
+
 
 severityFilter.addEventListener(
     "change",
     filterEvents
 );
 
+
 agentFilter.addEventListener(
     "change",
     filterEvents
 );
 
+
+/* =====================================================
+   TIME FILTER
+===================================================== */
+
 timeFilter.addEventListener(
     "change",
-    filterEvents
+    () => {
+
+        /*
+            Dummy data currently uses the same date.
+            The actual time-range filtering will be
+            implemented when events come from SQLite.
+        */
+
+        filterEvents();
+
+    }
 );
 
 
@@ -690,19 +610,21 @@ resetBtn.addEventListener(
 
         searchInput.value = "";
 
-        typeFilter.value = "all";
+        typeFilter.value = "";
 
-        severityFilter.value = "all";
+        severityFilter.value = "";
 
-        agentFilter.value = "all";
+        agentFilter.value = "";
 
-        timeFilter.value = "24h";
+        timeFilter.value = "";
 
         filteredEvents = [...events];
 
         currentPage = 1;
 
         selectedEvent = null;
+
+        closeDrawer();
 
         renderEvents();
 
@@ -720,13 +642,17 @@ refreshBtn.addEventListener(
 
         refreshBtn.disabled = true;
 
-        refreshBtn.querySelector("span").textContent = "⟳";
+        const originalText =
+            refreshBtn.textContent;
+
+        refreshBtn.textContent = "↻ Refreshing...";
+
 
         setTimeout(() => {
 
             refreshBtn.disabled = false;
 
-            refreshBtn.querySelector("span").textContent = "↻";
+            refreshBtn.textContent = originalText;
 
             renderEvents();
 

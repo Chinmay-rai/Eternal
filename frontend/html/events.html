@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ETERNAL</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/events.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- ================= SIDEBAR ================= -->
+
+        <aside class="sidebar">
+
+            <div class="logo">
+                <img src="../photos/logo.png">
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">⌂</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="events.html" class="nav-item active">
+                    <span class="nav-icon">▤</span>
+                    <span>Events</span>
+                </a>
+
+                <a href="alerts.html" class="nav-item">
+                    <span class="nav-icon">⚠</span>
+                    <span>Alerts</span>
+                </a>
+
+                <a href="agents.html" class="nav-item">
+                    <span class="nav-icon">◉</span>
+                    <span>Agents</span>
+                </a>
+
+                <a href="network.html" class="nav-item">
+                    <span class="nav-icon">⌁</span>
+                    <span>Network</span>
+                </a>
+
+                <a href="incidents.html" class="nav-item">
+                    <span class="nav-icon">◫</span>
+                    <span>Incidents</span>
+                </a>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+
+                <a href="settings.html" class="nav-item">
+                    <span class="nav-icon">⚙</span>
+                    <span>Settings</span>
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- ================= MAIN ================= -->
+
+        <main class="main">
+
+            <!-- TOP BAR -->
+
+            <header class="topbar">
+
+                <div class="page-title">
+                    <h1>Events</h1>
+                </div>
+
+                <div class="topbar-right">
+
+                    <div class="search">
+                        <span class="search-icon">⌕</span>
+                        <input type="text" placeholder="Search..." id="global-search">
+                    </div>
+
+                    <div class="date" id="current-date"></div>
+
+                    <div class="user">
+                        <div class="user-avatar">C</div>
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- ================= EVENTS CONTENT ================= -->
+
+            <section class="events-page">
+
+                <!-- CONTROLS -->
+
+                <div class="events-controls">
+
+                    <div class="event-search">
+                        <span>⌕</span>
+                        <input type="text" id="event-search" placeholder="Search events...">
+                    </div>
+
+                    <select id="event-type-filter">
+                        <option value="">Event Type</option>
+                        <option value="Authentication">Authentication</option>
+                        <option value="Process">Process</option>
+                        <option value="Network">Network</option>
+                        <option value="File Integrity">File Integrity</option>
+                        <option value="Privilege">Privilege</option>
+                    </select>
+
+                    <select id="severity-filter">
+                        <option value="">Severity</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                        <option value="Critical">Critical</option>
+                    </select>
+
+                    <select id="agent-filter">
+                        <option value="">Agent</option>
+                        <option value="Linux-VM-01">Linux-VM-01</option>
+                        <option value="Linux-VM-02">Linux-VM-02</option>
+                    </select>
+
+                    <select id="time-filter">
+                        <option value="">Time Range</option>
+                        <option value="1h">Last 1 hour</option>
+                        <option value="6h">Last 6 hours</option>
+                        <option value="24h">Last 24 hours</option>
+                        <option value="7d">Last 7 days</option>
+                    </select>
+
+                    <button class="reset-btn" id="reset-filters">
+                        Reset
+                    </button>
+
+                    <button class="refresh-btn" id="refresh-events">
+                        ↻ Refresh
+                    </button>
+
+                </div>
+
+
+                <!-- EVENT TABLE -->
+
+                <div class="events-table-card">
+
+                    <div class="table-header">
+                        <div>
+                            <h2>Security Events</h2>
+                            <span id="event-count">12 events</span>
+                        </div>
+                    </div>
+
+                    <div class="table-wrapper">
+
+                        <table class="events-table">
+
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Event Type</th>
+                                    <th>Agent</th>
+                                    <th>Source IP</th>
+                                    <th>Username</th>
+                                    <th>Severity</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="events-table-body">
+
+                                <tr class="event-row">
+                                    <td>23:41:18</td>
+                                    <td>
+                                        <span class="event-type">Authentication</span>
+                                    </td>
+                                    <td>Linux-VM-01</td>
+                                    <td>192.168.1.24</td>
+                                    <td>admin</td>
+                                    <td>
+                                        <span class="severity medium">Medium</span>
+                                    </td>
+                                    <td class="row-arrow">›</td>
+                                </tr>
+
+                                <tr class="event-row">
+                                    <td>23:38:42</td>
+                                    <td>
+                                        <span class="event-type">Authentication</span>
+                                    </td>
+                                    <td>Linux-VM-01</td>
+                                    <td>192.168.1.24</td>
+                                    <td>root</td>
+                                    <td>
+                                        <span class="severity high">High</span>
+                                    </td>
+                                    <td class="row-arrow">›</td>
+                                </tr>
+
+                                <tr class="event-row">
+                                    <td>23:35:09</td>
+                                    <td>
+                                        <span class="event-type">Process</span>
+                                    </td>
+                                    <td>Linux-VM-02</td>
+                                    <td>192.168.1.31</td>
+                                    <td>chinmay</td>
+                                    <td>
+                                        <span class="severity low">Low</span>
+                                    </td>
+                                    <td class="row-arrow">›</td>
+                                </tr>
+
+                                <tr class="event-row">
+                                    <td>23:31:55</td>
+                                    <td>
+                                        <span class="event-type">Network</span>
+                                    </td>
+                                    <td>Linux-VM-01</td>
+                                    <td>10.0.0.15</td>
+                                    <td>—</td>
+                                    <td>
+                                        <span class="severity high">High</span>
+                                    </td>
+                                    <td class="row-arrow">›</td>
+                                </tr>
+
+                                <tr class="event-row">
+                                    <td>23:27:14</td>
+                                    <td>
+                                        <span class="event-type">File Integrity</span>
+                                    </td>
+                                    <td>Linux-VM-01</td>
+                                    <td>192.168.1.24</td>
+                                    <td>root</td>
+                                    <td>
+                                        <span class="severity critical">Critical</span>
+                                    </td>
+                                    <td class="row-arrow">›</td>
+                                </tr>
+
+                                <tr class="event-row">
+                                    <td>23:22:48</td>
+                                    <td>
+                                        <span class="event-type">Privilege</span>
+                                    </td>
+                                    <td>Linux-VM-02</td>
+                                    <td>192.168.1.31</td>
+                                    <td>admin</td>
+                                    <td>
+                                        <span class="severity medium">Medium</span>
+                                    </td>
+                                    <td class="row-arrow">›</td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <!-- PAGINATION -->
+
+                    <div class="pagination">
+
+                        <span class="pagination-info">
+                            Showing 1–6 of 12 events
+                        </span>
+
+                        <div class="pagination-buttons">
+                            <button disabled>‹</button>
+                            <button class="current-page">1</button>
+                            <button>2</button>
+                            <button>›</button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- ================= EVENT DETAILS DRAWER ================= -->
+
+    <aside class="event-drawer" id="event-drawer">
+
+        <div class="drawer-header">
+
+            <div>
+                <span class="drawer-label">EVENT DETAILS</span>
+                <h2>Authentication Event</h2>
+            </div>
+
+            <button class="drawer-close" id="drawer-close">
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="drawer-content">
+
+            <div class="drawer-severity">
+                <span class="severity high">High</span>
+            </div>
+
+            <div class="event-description">
+                Multiple failed authentication attempts were detected from the same source IP.
+            </div>
+
+
+            <div class="detail-grid">
+
+                <div class="detail-item">
+                    <span>Event ID</span>
+                    <strong>EVT-000124</strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Timestamp</span>
+                    <strong>Sep 5, 2026 23:38:42</strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Agent</span>
+                    <strong>Linux-VM-01</strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Source IP</span>
+                    <strong>192.168.1.24</strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Username</span>
+                    <strong>root</strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Event Type</span>
+                    <strong>Authentication</strong>
+                </div>
+
+            </div>
+
+
+            <div class="raw-event">
+
+                <div class="raw-event-header">
+                    <span>Raw Event Data</span>
+                </div>
+
+                <pre>{
+  "event_type": "authentication",
+  "action": "failed_login",
+  "username": "root",
+  "source_ip": "192.168.1.24",
+  "timestamp": "2026-09-05T23:38:42"
+}</pre>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- JavaScript -->
+
+    <script src="../js/script.js"></script>
+    <script src="../js/events.js"></script>
+
+</body>
+
+</html>
