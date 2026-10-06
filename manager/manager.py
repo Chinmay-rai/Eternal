@@ -64,22 +64,52 @@ def store_event(event, agent_id):
     connection_db = sqlite3.connect(DATABASE_PATH)
     cursor = connection_db.cursor()
 
+    if event.get("windows_record_id") is not None:
+
+        cursor.execute(
+            """
+            SELECT id
+            FROM events
+            WHERE agent_id = ?
+            AND windows_record_id = ?
+            """,
+            (
+                agent_id,
+                event["windows_record_id"]
+            )
+        )
+
+        existing_event = cursor.fetchone()
+
+        if existing_event:
+            print(
+                f"Event already processed "
+                f"(Windows Record ID: {event['windows_record_id']})"
+            )
+
+            connection_db.close()
+            return
+
     cursor.execute(
         """
         INSERT INTO events (
             agent_id,
             timestamp,
+            windows_event_id,
+            windows_record_id,
             event_type,
             source_ip,
             username,
             severity,
             description
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             agent_id,
             event["timestamp"],
+            event.get("windows_event_id"),
+            event.get("windows_record_id"),
             event["event_type"],
             event.get("source_ip"),
             event.get("username"),

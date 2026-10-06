@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS events (
     username TEXT,
     severity TEXT,
     description TEXT,
-
+    windows_event_id INTEGER,
+    windows_record_id INTEGER,
     FOREIGN KEY (agent_id)
         REFERENCES agents(id)
         ON DELETE CASCADE
@@ -41,10 +42,8 @@ CREATE TABLE IF NOT EXISTS alerts (
     severity TEXT NOT NULL,
     status TEXT NOT NULL DEFAULT 'New',
     description TEXT,
-
     FOREIGN KEY (rule_id)
         REFERENCES detection_rules(id),
-
     FOREIGN KEY (agent_id)
         REFERENCES agents(id)
         ON DELETE CASCADE
@@ -53,13 +52,10 @@ CREATE TABLE IF NOT EXISTS alerts (
 CREATE TABLE IF NOT EXISTS alert_events (
     alert_id INTEGER NOT NULL,
     event_id INTEGER NOT NULL,
-
     PRIMARY KEY (alert_id, event_id),
-
     FOREIGN KEY (alert_id)
         REFERENCES alerts(id)
         ON DELETE CASCADE,
-
     FOREIGN KEY (event_id)
         REFERENCES events(id)
         ON DELETE CASCADE
@@ -74,7 +70,6 @@ CREATE TABLE IF NOT EXISTS incidents (
     first_seen TEXT NOT NULL,
     last_seen TEXT NOT NULL,
     description TEXT,
-
     FOREIGN KEY (agent_id)
         REFERENCES agents(id)
         ON DELETE CASCADE
@@ -83,14 +78,8 @@ CREATE TABLE IF NOT EXISTS incidents (
 CREATE TABLE IF NOT EXISTS incident_alerts (
     incident_id INTEGER NOT NULL,
     alert_id INTEGER NOT NULL,
-
     PRIMARY KEY (incident_id, alert_id),
-
     FOREIGN KEY (incident_id)
         REFERENCES incidents(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (alert_id)
-        REFERENCES alerts(id)
         ON DELETE CASCADE
 );
