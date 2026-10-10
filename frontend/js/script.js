@@ -523,9 +523,8 @@ function renderRecentEvents(events) {
 
         const severity = (event.severity || "low").toLowerCase();
 
-        badge.className = `severity-badge ${
-            severityColors[severity] ? severity : "low"
-        }`;
+        badge.className = `severity-badge ${severityColors[severity] ? severity : "low"
+            }`;
 
         badge.textContent =
             severity.charAt(0).toUpperCase() + severity.slice(1);

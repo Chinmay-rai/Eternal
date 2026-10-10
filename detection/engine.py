@@ -441,12 +441,12 @@ def create_alert(
     alert_id = cursor.lastrowid
 
     cursor.executemany("""
-        INSERT INTO alert_events (alert_id, event_id)
-        VALUES (?, ?)
-    """, [
-        (alert_id, event_id)
-        for event_id in event_ids
-    ])
+    INSERT OR IGNORE INTO alert_events (alert_id, event_id)
+    VALUES (?, ?)
+""", [
+    (alert_id, event_id)
+    for event_id in event_ids
+])
 
     create_or_update_incident(
         connection,

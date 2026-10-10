@@ -447,13 +447,42 @@ function closeAlertDrawer() {
    These changes are temporary until a status API exists.
 ===================================================== */
 
-function updateSelectedAlertStatus(status) {
+async function updateSelectedAlertStatus(status) {
     if (!selectedAlert) return;
 
-    selectedAlert.status = status;
+    const currentAlert = selectedAlert;
 
-    openAlertDrawer(selectedAlert);
-    renderAlerts();
+    try {
+        const response = await fetch(
+            `/api/alerts/${currentAlert.databaseId}/status`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ status: status })
+            }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                result.error || "Failed to update alert status"
+            );
+        }
+
+        currentAlert.status = status;
+
+        openAlertDrawer(currentAlert);
+        renderAlerts();
+
+    } catch (error) {
+        console.error("Failed to update alert status:", error);
+        window.alert(
+            "Could not update alert status. Please try again."
+        );
+    }
 }
 
 drawerClose.addEventListener("click", () => {

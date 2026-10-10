@@ -302,6 +302,36 @@ def get_alerts():
     finally:
         connection.close()
 
+@app.route("/api/alerts/<int:alert_id>/status", methods=["PATCH"])
+def update_alert_status(alert_id):
+    data = request.get_json(silent=True) or {}
+    status = data.get("status")
+
+    allowed_statuses = {"New", "Investigating", "Resolved"}
+
+    if status not in allowed_statuses:
+        return jsonify({"error": "Invalid alert status"}), 400
+
+    connection = get_connection()
+
+    try:
+        cursor = connection.execute(
+            "UPDATE alerts SET status = ? WHERE id = ?",
+            (status, alert_id)
+        )
+        connection.commit()
+
+        if cursor.rowcount == 0:
+            return jsonify({"error": "Alert not found"}), 404
+
+        return jsonify({
+            "message": "Alert status updated",
+            "id": alert_id,
+            "status": status
+        })
+
+    finally:
+        connection.close()
 
 # --------------------------------------------------
 # Agents API
@@ -352,12 +382,9 @@ def get_agents():
                             last_seen.astimezone().replace(tzinfo=None)
                         )
 
-                    seconds_since_seen = (
-                        now - last_seen
-                    ).total_seconds()
+                    status = "Active"
 
-                    if 0 <= seconds_since_seen <= 30:
-                        status = "Active"
+                    status = "Active"
 
                 except (ValueError, TypeError, AttributeError):
                     status = "Offline"
@@ -395,11 +422,8 @@ def get_dashboard():
         ).fetchone()[0]
 
         active_agents = connection.execute(
-            """
-            SELECT COUNT(*) FROM agents
-            WHERE LOWER(status) = 'active'
-            """
-        ).fetchone()[0]
+    "SELECT COUNT(*) FROM agents"
+).fetchone()[0]
 
         open_alerts = connection.execute(
             """

@@ -1,7 +1,7 @@
 import socket
 import json
 import sqlite3
-
+from datetime import datetime
 import sys
 from pathlib import Path
 
@@ -70,12 +70,12 @@ def get_agent_id(agent_name, ip_address):
     return agent_id
 
 
+
 def store_event(event, agent_id):
     connection_db = sqlite3.connect(DATABASE_PATH)
     cursor = connection_db.cursor()
 
     if event.get("windows_record_id") is not None:
-
         cursor.execute(
             """
             SELECT id
@@ -83,10 +83,7 @@ def store_event(event, agent_id):
             WHERE agent_id = ?
             AND windows_record_id = ?
             """,
-            (
-                agent_id,
-                event["windows_record_id"]
-            )
+            (agent_id, event["windows_record_id"])
         )
 
         existing_event = cursor.fetchone()
@@ -97,6 +94,16 @@ def store_event(event, agent_id):
                 f"(Windows Record ID: {event['windows_record_id']})"
             )
 
+            cursor.execute(
+                """
+                UPDATE agents
+                SET last_communication = ?
+                WHERE id = ?
+                """,
+                (datetime.now().isoformat(), agent_id)
+            )
+
+            connection_db.commit()
             connection_db.close()
             return
 
@@ -120,7 +127,7 @@ def store_event(event, agent_id):
             event["timestamp"],
             event.get("windows_event_id"),
             event.get("windows_record_id"),
-            event["event_type"],
+            event.get("event_type"),
             event.get("source_ip"),
             event.get("username"),
             event.get("severity"),
@@ -137,7 +144,7 @@ def store_event(event, agent_id):
         WHERE id = ?
         """,
         (
-            event["timestamp"],
+            datetime.now().isoformat(),
             "Active",
             agent_id
         )
@@ -145,6 +152,7 @@ def store_event(event, agent_id):
 
     connection_db.commit()
     connection_db.close()
+
 
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
