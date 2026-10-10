@@ -1,119 +1,8 @@
-const incidents = [
-    {
-        id: "INC-001",
-        time: "23:41:05",
-        name: "SSH Brute Force Attack",
-        severity: "High",
-        agent: "Linux-VM-01",
-        alerts: 2,
-        status: "Investigating",
+const API_URL = "/api/incidents";
 
-        firstSeen: "23:38:12",
-        lastSeen: "23:41:05",
-
-        description:
-            "Multiple failed SSH authentication attempts were detected from the same source within a short time window.",
-
-        relatedAlerts: [
-            "Repeated SSH Authentication Failures",
-            "Successful Login After Failures"
-        ],
-
-        timeline: [
-            {
-                time: "23:38:12",
-                event: "SSH login failed from 192.168.1.50"
-            },
-            {
-                time: "23:39:04",
-                event: "SSH login failed from 192.168.1.50"
-            },
-            {
-                time: "23:40:18",
-                event: "SSH login failed from 192.168.1.50"
-            },
-            {
-                time: "23:41:02",
-                event: "Detection rule triggered: 10 failed attempts within 60 seconds"
-            },
-            {
-                time: "23:41:05",
-                event: "Successful SSH login detected from 192.168.1.50"
-            }
-        ]
-    },
-
-    {
-        id: "INC-002",
-        time: "21:18:42",
-        name: "Suspicious Privileged Activity",
-        severity: "Medium",
-        agent: "Linux-VM-01",
-        alerts: 1,
-        status: "Open",
-
-        firstSeen: "21:18:20",
-        lastSeen: "21:18:42",
-
-        description:
-            "A suspicious command was executed with elevated privileges on the monitored system.",
-
-        relatedAlerts: [
-            "Suspicious Privileged Command"
-        ],
-
-        timeline: [
-            {
-                time: "21:18:20",
-                event: "User switched to elevated privileges"
-            },
-            {
-                time: "21:18:35",
-                event: "Suspicious command execution detected"
-            },
-            {
-                time: "21:18:42",
-                event: "Detection rule triggered"
-            }
-        ]
-    },
-
-    {
-        id: "INC-003",
-        time: "18:52:10",
-        name: "Network Port Scan",
-        severity: "Medium",
-        agent: "Linux-VM-02",
-        alerts: 1,
-        status: "Resolved",
-
-        firstSeen: "18:51:44",
-        lastSeen: "18:52:10",
-
-        description:
-            "Multiple connection attempts were detected against different network ports.",
-
-        relatedAlerts: [
-            "Port Scan Detected"
-        ],
-
-        timeline: [
-            {
-                time: "18:51:44",
-                event: "Connection attempt detected on port 22"
-            },
-            {
-                time: "18:51:51",
-                event: "Connection attempts detected across multiple ports"
-            },
-            {
-                time: "18:52:10",
-                event: "Port scan detection rule triggered"
-            }
-        ]
-    }
-];
-
+let incidents = [];
+let filteredIncidents = [];
+let selectedIncident = null;
 
 const tableBody = document.getElementById("incidents-table-body");
 const incidentCount = document.getElementById("incident-count");
@@ -144,333 +33,437 @@ const investigateButton = document.getElementById("investigate-button");
 const resolveButton = document.getElementById("resolve-button");
 
 
-let filteredIncidents = [...incidents];
-let selectedIncident = null;
+// --------------------------------------------------
+// Helpers
+// --------------------------------------------------
+
+function displayId(id) {
+    return `INC-${String(id).padStart(3, "0")}`;
+}
+
+function formatDate(value) {
+    if (!value) return "—";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return value;
+    }
+
+    return date.toLocaleString();
+}
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[character]);
+}
+
+function severityClass(value) {
+    return `severity-${String(value || "medium").toLowerCase()}`;
+}
+
+function statusClass(value) {
+    return `status-${String(value || "open").toLowerCase()}`;
+}
 
 
-/* Render Table */
+// --------------------------------------------------
+// Load incidents from the real API
+// --------------------------------------------------
+
+async function loadIncidents() {
+    if (refreshButton) {
+        refreshButton.disabled = true;
+    }
+
+    try {
+        const response = await fetch(API_URL, {
+            cache: "no-store"
+        });
+
+        if (!response.ok) {
+            throw new Error(`API returned HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!Array.isArray(data)) {
+            throw new Error("The incidents API did not return a list.");
+        }
+
+        incidents = data.map(item => ({
+            ...item,
+            id: Number(item.id),
+            displayId: displayId(item.id),
+            name: item.name || "Unnamed Incident",
+            severity: item.severity || "Medium",
+            status: item.status || "Open",
+            agent: item.agent || "Unknown Agent",
+            alerts: Number(item.alert_count || 0),
+            firstSeen: item.first_seen,
+            lastSeen: item.last_seen,
+            description: item.description || "No description available."
+        }));
+
+        applyFilters();
+
+        // Refresh the open drawer with the updated record.
+        if (selectedIncident) {
+            const updated = incidents.find(
+                item => item.id === selectedIncident.id
+            );
+
+            if (updated) {
+                selectedIncident = updated;
+                renderDrawer(updated);
+            } else {
+                closeDrawer();
+            }
+        }
+    } catch (error) {
+        console.error("Failed to load incidents:", error);
+
+        if (tableBody) {
+            tableBody.innerHTML = `
+                <tr class="empty-row">
+                    <td colspan="7">
+                        Could not load incidents. Check that Flask is running
+                        and /api/incidents is available.
+                    </td>
+                </tr>
+            `;
+        }
+
+        if (incidentCount) {
+            incidentCount.textContent = "Unable to load incidents";
+        }
+    } finally {
+        if (refreshButton) {
+            refreshButton.disabled = false;
+        }
+    }
+}
+
+
+// --------------------------------------------------
+// Render incidents table
+// --------------------------------------------------
 
 function renderIncidents() {
+    if (!tableBody || !incidentCount) return;
 
     tableBody.innerHTML = "";
 
     incidentCount.textContent =
-        `${filteredIncidents.length} incident${filteredIncidents.length !== 1 ? "s" : ""}`;
-
+        `${filteredIncidents.length} incident` +
+        `${filteredIncidents.length !== 1 ? "s" : ""}`;
 
     if (filteredIncidents.length === 0) {
-
         tableBody.innerHTML = `
             <tr class="empty-row">
-                <td colspan="7">
-                    No incidents found
-                </td>
+                <td colspan="7">No incidents found</td>
             </tr>
         `;
-
         return;
     }
 
-
     filteredIncidents.forEach(incident => {
-
         const row = document.createElement("tr");
 
-        const severityClass =
-            `severity-${incident.severity.toLowerCase()}`;
-
-        const statusClass =
-            `status-${incident.status.toLowerCase()}`;
-
-
         row.innerHTML = `
-            <td>${incident.time}</td>
+            <td>${escapeHTML(formatDate(incident.lastSeen))}</td>
 
             <td>
                 <span class="incident-name">
-                    ${incident.name}
+                    ${escapeHTML(incident.name)}
                 </span>
+                <small>${escapeHTML(incident.displayId)}</small>
             </td>
 
             <td>
-                <span class="severity ${severityClass}">
-                    ${incident.severity}
+                <span class="severity ${severityClass(incident.severity)}">
+                    ${escapeHTML(incident.severity)}
                 </span>
             </td>
 
-            <td>${incident.agent}</td>
+            <td>${escapeHTML(incident.agent)}</td>
 
             <td>
-                <span class="alert-count">
-                    ${incident.alerts}
+                <span class="alert-count">${incident.alerts}</span>
+            </td>
+
+            <td>
+                <span class="status ${statusClass(incident.status)}">
+                    ${escapeHTML(incident.status)}
                 </span>
             </td>
 
-            <td>
-                <span class="status ${statusClass}">
-                    ${incident.status}
-                </span>
-            </td>
-
-            <td>
-                <span class="row-arrow">›</span>
-            </td>
+            <td><span class="row-arrow">›</span></td>
         `;
 
-
-        row.addEventListener("click", () => {
-            openDrawer(incident);
-        });
-
-
+        row.addEventListener("click", () => openDrawer(incident));
         tableBody.appendChild(row);
-
     });
 }
 
 
-/* Filtering */
+// --------------------------------------------------
+// Search and filters
+// --------------------------------------------------
 
 function applyFilters() {
+    const searchTerm = (searchInput?.value || "")
+        .toLowerCase()
+        .trim();
 
-    const searchTerm =
-        searchInput.value.toLowerCase().trim();
-
-    const severity =
-        severityFilter.value;
-
-    const status =
-        statusFilter.value;
-
+    const severity = severityFilter?.value || "";
+    const status = statusFilter?.value || "";
 
     filteredIncidents = incidents.filter(incident => {
-
-        const matchesSearch =
-            incident.name.toLowerCase().includes(searchTerm) ||
-            incident.id.toLowerCase().includes(searchTerm) ||
-            incident.agent.toLowerCase().includes(searchTerm);
+        const matchesSearch = [
+            incident.name,
+            incident.displayId,
+            incident.agent,
+            incident.description
+        ].some(value =>
+            String(value || "").toLowerCase().includes(searchTerm)
+        );
 
         const matchesSeverity =
             !severity ||
-            incident.severity === severity;
+            incident.severity.toLowerCase() === severity.toLowerCase();
 
         const matchesStatus =
             !status ||
-            incident.status === status;
+            incident.status.toLowerCase() === status.toLowerCase();
 
-
-        return (
-            matchesSearch &&
-            matchesSeverity &&
-            matchesStatus
-        );
-
+        return matchesSearch && matchesSeverity && matchesStatus;
     });
-
 
     renderIncidents();
 }
 
 
-/* Drawer */
+// --------------------------------------------------
+// Incident details drawer
+// --------------------------------------------------
 
 function openDrawer(incident) {
-
     selectedIncident = incident;
 
+    renderDrawer(incident);
 
-    drawerTitle.textContent = incident.name;
-    drawerId.textContent = incident.id;
-    drawerSeverity.textContent = incident.severity;
-    drawerStatus.textContent = incident.status;
-    drawerAgent.textContent = incident.agent;
-    drawerFirstSeen.textContent = incident.firstSeen;
-    drawerLastSeen.textContent = incident.lastSeen;
+    if (drawer) {
+        drawer.classList.add("open");
+    }
+}
 
-    drawerDescription.textContent =
-        incident.description;
+function renderDrawer(incident) {
+    if (!incident) return;
 
+    if (drawerTitle) drawerTitle.textContent = incident.name;
+    if (drawerId) drawerId.textContent = incident.displayId;
+    if (drawerSeverity) drawerSeverity.textContent = incident.severity;
+    if (drawerStatus) drawerStatus.textContent = incident.status;
+    if (drawerAgent) drawerAgent.textContent = incident.agent;
 
-    relatedAlerts.innerHTML = "";
+    if (drawerFirstSeen) {
+        drawerFirstSeen.textContent = formatDate(incident.firstSeen);
+    }
 
-    incident.relatedAlerts.forEach(alert => {
+    if (drawerLastSeen) {
+        drawerLastSeen.textContent = formatDate(incident.lastSeen);
+    }
 
-        const element = document.createElement("div");
+    if (drawerDescription) {
+        drawerDescription.textContent = incident.description;
+    }
 
-        element.className = "related-alert";
-        element.textContent = alert;
+    // The current API provides an alert count, not individual alert details.
+    if (relatedAlerts) {
+        relatedAlerts.innerHTML = "";
 
-        relatedAlerts.appendChild(element);
+        const message = document.createElement("div");
+        message.className = "related-alert";
 
-    });
+        message.textContent = incident.alerts
+            ? `${incident.alerts} linked alert(s). Individual alert details are not provided by this API yet.`
+            : "No linked alerts.";
 
+        relatedAlerts.appendChild(message);
+    }
 
-    incidentTimeline.innerHTML = "";
+    // Show the real incident timestamps rather than a fabricated timeline.
+    if (incidentTimeline) {
+        incidentTimeline.innerHTML = "";
 
-    incident.timeline.forEach(item => {
+        const entries = [
+            ["First seen", incident.firstSeen],
+            ["Last seen", incident.lastSeen]
+        ];
 
-        const element = document.createElement("div");
+        entries.forEach(([label, timestamp]) => {
+            const element = document.createElement("div");
+            element.className = "timeline-item";
 
-        element.className = "timeline-item";
+            const time = document.createElement("span");
+            time.className = "timeline-time";
+            time.textContent = formatDate(timestamp);
 
-        element.innerHTML = `
-            <span class="timeline-time">
-                ${item.time}
-            </span>
+            const event = document.createElement("span");
+            event.className = "timeline-event";
+            event.textContent = label;
 
-            <span class="timeline-event">
-                ${item.event}
-            </span>
-        `;
-
-        incidentTimeline.appendChild(element);
-
-    });
-
-
-    drawer.classList.add("open");
+            element.append(time, event);
+            incidentTimeline.appendChild(element);
+        });
+    }
 
     updateActionButtons();
 }
 
-
 function closeDrawer() {
-
-    drawer.classList.remove("open");
+    if (drawer) {
+        drawer.classList.remove("open");
+    }
 
     selectedIncident = null;
 }
 
 
-/* Incident Actions */
+// --------------------------------------------------
+// Persist status changes through Flask
+// --------------------------------------------------
+
+async function changeIncidentStatus(newStatus) {
+    if (!selectedIncident) return;
+
+    const incident = selectedIncident;
+
+    if (investigateButton) investigateButton.disabled = true;
+    if (resolveButton) resolveButton.disabled = true;
+
+    try {
+        const response = await fetch(
+            `${API_URL}/${incident.id}/status`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ status: newStatus })
+            }
+        );
+
+        const result = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            throw new Error(
+                result.error || `HTTP ${response.status}`
+            );
+        }
+
+        // Reload from the database after the server confirms the update.
+        await loadIncidents();
+
+        const updated = incidents.find(item => item.id === incident.id);
+
+        if (updated) {
+            selectedIncident = updated;
+            renderDrawer(updated);
+        }
+    } catch (error) {
+        console.error("Failed to update incident:", error);
+        alert(`Could not update incident status: ${error.message}`);
+    } finally {
+        if (investigateButton) investigateButton.disabled = false;
+        if (resolveButton) resolveButton.disabled = false;
+    }
+}
 
 function updateActionButtons() {
+    if (!selectedIncident) return;
 
-    if (!selectedIncident) {
-        return;
+    if (investigateButton) {
+        if (selectedIncident.status === "Open") {
+            investigateButton.style.display = "block";
+            investigateButton.textContent = "Mark Investigating";
+        } else if (selectedIncident.status === "Investigating") {
+            investigateButton.style.display = "block";
+            investigateButton.textContent = "Mark Open";
+        } else {
+            investigateButton.style.display = "none";
+        }
     }
 
-
-    if (selectedIncident.status === "Open") {
-
-        investigateButton.style.display = "block";
-        investigateButton.textContent = "Mark Investigating";
-
+    if (resolveButton) {
+        resolveButton.style.display =
+            selectedIncident.status === "Resolved" ? "none" : "block";
     }
-
-    else if (selectedIncident.status === "Investigating") {
-
-        investigateButton.style.display = "block";
-        investigateButton.textContent = "Mark Open";
-
-    }
-
-    else {
-
-        investigateButton.style.display = "none";
-
-    }
-
-
-    if (selectedIncident.status === "Resolved") {
-
-        resolveButton.style.display = "none";
-
-    }
-
-    else {
-
-        resolveButton.style.display = "block";
-
-    }
-
 }
 
 
-/* Mark Investigating */
+// --------------------------------------------------
+// Event listeners
+// --------------------------------------------------
 
-investigateButton.addEventListener("click", () => {
+if (investigateButton) {
+    investigateButton.addEventListener("click", () => {
+        if (!selectedIncident) return;
 
-    if (!selectedIncident) {
-        return;
-    }
+        const nextStatus =
+            selectedIncident.status === "Open"
+                ? "Investigating"
+                : "Open";
 
+        changeIncidentStatus(nextStatus);
+    });
+}
 
-    if (selectedIncident.status === "Open") {
+if (resolveButton) {
+    resolveButton.addEventListener("click", () => {
+        changeIncidentStatus("Resolved");
+    });
+}
 
-        selectedIncident.status = "Investigating";
+if (searchInput) {
+    searchInput.addEventListener("input", applyFilters);
+}
 
-    } else {
+if (severityFilter) {
+    severityFilter.addEventListener("change", applyFilters);
+}
 
-        selectedIncident.status = "Open";
+if (statusFilter) {
+    statusFilter.addEventListener("change", applyFilters);
+}
 
-    }
+if (resetButton) {
+    resetButton.addEventListener("click", () => {
+        if (searchInput) searchInput.value = "";
+        if (severityFilter) severityFilter.value = "";
+        if (statusFilter) statusFilter.value = "";
 
+        applyFilters();
+    });
+}
 
-    drawerStatus.textContent =
-        selectedIncident.status;
+if (refreshButton) {
+    refreshButton.addEventListener("click", loadIncidents);
+}
 
-    applyFilters();
-    updateActionButtons();
-
-});
-
-
-/* Resolve */
-
-resolveButton.addEventListener("click", () => {
-
-    if (!selectedIncident) {
-        return;
-    }
-
-
-    selectedIncident.status = "Resolved";
-
-    drawerStatus.textContent = "Resolved";
-
-    applyFilters();
-    updateActionButtons();
-
-});
-
-
-/* Search / Filters */
-
-searchInput.addEventListener("input", applyFilters);
-
-severityFilter.addEventListener("change", applyFilters);
-
-statusFilter.addEventListener("change", applyFilters);
+if (drawerClose) {
+    drawerClose.addEventListener("click", closeDrawer);
+}
 
 
-/* Reset */
+// --------------------------------------------------
+// Initial load
+// --------------------------------------------------
 
-resetButton.addEventListener("click", () => {
-
-    searchInput.value = "";
-    severityFilter.value = "";
-    statusFilter.value = "";
-
-    applyFilters();
-
-});
-
-
-/* Refresh */
-
-refreshButton.addEventListener("click", () => {
-
-    renderIncidents();
-
-});
-
-
-/* Close Drawer */
-
-drawerClose.addEventListener("click", closeDrawer);
-
-
-/* Initial Render */
-
-renderIncidents();
+loadIncidents();

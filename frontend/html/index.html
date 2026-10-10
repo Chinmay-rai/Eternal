@@ -87,28 +87,30 @@
 
             <!-- TOP BAR -->
 
-            <header class="topbar">
+  <header class="topbar">
+    <div class="page-title">
+        <h1>Security Overview</h1>
+    </div>
 
-                <div class="page-title">
-                    <h1>Security Overview</h1>
-                </div>
+    <div class="topbar-right">
 
-                <div class="topbar-right">
+        <div class="search">
+            <span class="search-icon">⌕</span>
+            <input
+                type="text"
+                placeholder="Search events, alerts, agents..."
+                id="global-search"
+                autocomplete="off"
+                aria-label="Search ETERNAL"
+            >
+        </div>
 
-                    <div class="search">
-                        <span class="search-icon">⌕</span>
-                        <input type="text" placeholder="Search..." id="global-search">
-                    </div>
+        <div class="date" id="current-date">
+            Loading date and time...
+        </div>
 
-                    <div class="date" id="current-date"></div>
-
-                    <div class="user">
-                        <div class="user-avatar">C</div>
-                    </div>
-
-                </div>
-
-            </header>
+    </div>
+</header>
 
 
             <!-- DASHBOARD CONTENT -->

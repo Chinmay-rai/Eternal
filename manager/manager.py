@@ -2,6 +2,16 @@ import socket
 import json
 import sqlite3
 
+import sys
+from pathlib import Path
+
+PROJECT_DIR = Path(__file__).resolve().parent.parent
+
+if str(PROJECT_DIR) not in sys.path:
+    sys.path.insert(0, str(PROJECT_DIR))
+
+from detection.engine import run_detection
+
 HOST = "0.0.0.0"
 PORT = 5000
 DATABASE_PATH = "Database/eternal.db"
@@ -185,6 +195,12 @@ while True:
                     message,
                     agent_id
                 )
+
+                try:
+                    run_detection()
+                except Exception as error:
+                    print(f"Detection error: {error}")
+
 
                 print(
                     f"Event stored from "
