@@ -348,6 +348,21 @@ function initializeGlobalSearch() {
 initializeGlobalSearch();
 
 
+
+
+// Highlight the current sidebar navigation item
+document.addEventListener("DOMContentLoaded", () => {
+    const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
+
+    document.querySelectorAll(".sidebar-nav .nav-item, .sidebar-bottom .nav-item")
+        .forEach(link => {
+            const linkPath = new URL(link.href).pathname.replace(/\/$/, "") || "/";
+
+            link.classList.toggle("active", linkPath === currentPath);
+        });
+});
+
+
 /* =========================
    EVENTS CHART
    ========================= */

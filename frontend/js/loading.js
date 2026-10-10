@@ -1,70 +1,61 @@
-document.addEventListener("DOMContentLoaded", () => {
 
-    const loaderShown =
-        sessionStorage.getItem("eternalLoaderShown");
+document.addEventListener("DOMContentLoaded", async () => {
+    const placeholder = document.getElementById("loader-placeholder");
+    const loaderShown = sessionStorage.getItem("eternalLoaderShown");
 
-    const placeholder =
-        document.getElementById("loader-placeholder");
-
-
-    /* Already shown this session */
-
+    // Loader has already played in this tab session
     if (loaderShown) {
-
-        placeholder.remove();
+        if (placeholder) {
+            placeholder.remove();
+        }
 
         return;
-
     }
 
+    // Mark it before loading to prevent repeated playback
+    sessionStorage.setItem("eternalLoaderShown", "true");
 
-    sessionStorage.setItem(
-        "eternalLoaderShown",
-        "true"
-    );
+    if (!placeholder) {
+        return;
+    }
 
+    try {
+        // Always load from the Flask-served frontend HTML folder
+        const response = await fetch("/html/loading.html");
 
-    fetch("loading.html")
-        .then(response => response.text())
+        if (!response.ok) {
+            throw new Error(`Loader request failed: ${response.status}`);
+        }
 
-        .then(html => {
+        const html = await response.text();
+        placeholder.outerHTML = html;
 
-            placeholder.outerHTML = html;
+        const loader = document.getElementById("eternal-loader");
 
-            const loader =
-                document.getElementById("eternal-loader");
+        if (!loader) {
+            return;
+        }
 
-            /* Your existing timers continue here... */
+        document.body.style.overflow = "hidden";
 
-            setTimeout(() => {
+        // Preserve the existing loader timing
+        setTimeout(() => {
+            loader.style.transition = "opacity 0.8s ease";
+            loader.style.opacity = "0";
+        }, 6000);
 
-                loader.style.transition =
-                    "opacity 0.8s ease";
+        setTimeout(() => {
+            loader.remove();
+            document.body.style.overflow = "auto";
+        }, 6800);
 
-                loader.style.opacity = "0";
+    } catch (error) {
+        console.error("ETERNAL LOADER ERROR:", error);
 
-            }, 6000);
-
-
-            setTimeout(() => {
-
-                loader.remove();
-
-                document.body.style.overflow = "auto";
-
-            }, 6500);
-
-        })
-
-        .catch(error => {
-
-            console.error(
-                "ETERNAL LOADER ERROR:",
-                error
-            );
-
+        if (placeholder && placeholder.isConnected) {
             placeholder.remove();
+        }
 
-        });
-
+        document.body.style.overflow = "auto";
+    }
 });
