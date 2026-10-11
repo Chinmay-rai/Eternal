@@ -115,8 +115,14 @@ async function loadAlerts() {
             throw new Error("Invalid alert data received");
         }
 
+        
         alerts = data.map(alert => {
             const timestamp = alert.timestamp || "";
+            const firstSeen = alert.first_seen || timestamp;
+            const lastSeen = alert.last_seen || timestamp;
+            const relatedEvents = Number(
+                alert.related_event_count || 0
+            );
 
             return {
                 id: `ALT-${String(alert.id).padStart(6, "0")}`,
@@ -126,12 +132,12 @@ async function loadAlerts() {
                 title: alert.alert_type || alert.rule_name || "Security Alert",
                 rule: alert.rule_name || "Unknown Rule",
                 agent: alert.agent || "Unknown",
-                sourceIP: "—",
+                sourceIP: alert.source_ip || "—",
                 severity: formatSeverity(alert.severity),
                 status: formatStatus(alert.status),
-                firstSeen: formatTimestamp(timestamp),
-                lastSeen: formatTimestamp(timestamp),
-                relatedEvents: "—",
+                firstSeen: formatTimestamp(firstSeen),
+                lastSeen: formatTimestamp(lastSeen),
+                relatedEvents,
                 description: alert.description || "No description available.",
                 detectionLogic: alert.description || "No detection details available."
             };
@@ -426,10 +432,12 @@ function openAlertDrawer(alert) {
     detailIP.textContent = alert.sourceIP;
     detailFirstSeen.textContent = alert.firstSeen;
     detailLastSeen.textContent = alert.lastSeen;
+    
     detailEvents.textContent =
-        alert.relatedEvents === "—"
-            ? "Not available"
-            : `${alert.relatedEvents} events`;
+        alert.relatedEvents > 0
+            ? `${alert.relatedEvents} related event${alert.relatedEvents === 1 ? "" : "s"}`
+            : "No linked events";
+
 
     detectionLogic.textContent = alert.detectionLogic;
 

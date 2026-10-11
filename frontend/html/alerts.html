@@ -15,13 +15,11 @@
 
     <div class="app">
 
-        <!-- ================= SIDEBAR ================= -->
-
-
+        <!-- SIDEBAR -->
         <aside class="sidebar">
 
             <div class="logo">
-                <img src="../photos/logo.png">
+                <img src="../photos/logo.png" alt="ETERNAL Logo">
             </div>
 
             <nav class="sidebar-nav">
@@ -59,23 +57,18 @@
             </nav>
 
             <div class="sidebar-bottom">
-
                 <a href="/settings" class="nav-item">
                     <span class="nav-icon">⚙</span>
                     <span>Settings</span>
                 </a>
-
             </div>
 
         </aside>
 
-
-        <!-- ================= MAIN ================= -->
-
+        <!-- MAIN CONTENT -->
         <main class="main">
 
             <!-- TOP BAR -->
-
             <header class="topbar">
 
                 <div class="page-title">
@@ -95,23 +88,16 @@
 
             </header>
 
-
-            <!-- ================= ALERTS CONTENT ================= -->
-
+            <!-- ALERTS CONTENT -->
             <section class="alerts-page">
 
                 <!-- FILTER BAR -->
-
                 <div class="alerts-controls">
 
                     <div class="alert-search">
-
                         <span>⌕</span>
-
                         <input type="text" id="alert-search" placeholder="Search alerts...">
-
                     </div>
-
 
                     <select id="severity-filter">
                         <option value="">Severity</option>
@@ -121,34 +107,13 @@
                         <option value="Critical">Critical</option>
                     </select>
 
-
                     <select id="alert-type-filter">
                         <option value="">Alert Type</option>
-                        <option value="SSH Brute Force">SSH Brute Force</option>
-                        <option value="Suspicious File Modification">
-                            Suspicious File Modification
-                        </option>
-                        <option value="Port Scan Detected">
-                            Port Scan Detected
-                        </option>
-                        <option value="Privilege Escalation">
-                            Privilege Escalation
-                        </option>
-                        <option value="Malware Execution">
-                            Malware Execution
-                        </option>
-                        <option value="Unexpected Process">
-                            Unexpected Process
-                        </option>
                     </select>
-
 
                     <select id="agent-filter">
                         <option value="">Agent</option>
-                        <option value="Linux-VM-01">Linux-VM-01</option>
-                        <option value="Linux-VM-02">Linux-VM-02</option>
                     </select>
-
 
                     <select id="status-filter">
                         <option value="">Status</option>
@@ -157,11 +122,9 @@
                         <option value="Resolved">Resolved</option>
                     </select>
 
-
                     <button class="reset-btn" id="reset-filters">
                         Reset
                     </button>
-
 
                     <button class="refresh-btn" id="refresh-alerts">
                         ↻ Refresh
@@ -169,32 +132,21 @@
 
                 </div>
 
-
                 <!-- ALERT TABLE -->
-
                 <div class="alerts-table-card">
 
                     <div class="table-header">
-
                         <div>
-
                             <h2>Security Alerts</h2>
-
-                            <span id="alert-count">
-                                8 alerts
-                            </span>
-
+                            <span id="alert-count"></span>
                         </div>
-
                     </div>
-
 
                     <div class="table-wrapper">
 
                         <table class="alerts-table">
 
                             <thead>
-
                                 <tr>
                                     <th>Time</th>
                                     <th>Alert</th>
@@ -205,28 +157,20 @@
                                     <th>Status</th>
                                     <th></th>
                                 </tr>
-
                             </thead>
 
-
-                            <tbody id="alerts-table-body">
-                            </tbody>
+                            <tbody id="alerts-table-body"></tbody>
 
                         </table>
 
                     </div>
 
-
                     <!-- PAGINATION -->
-
                     <div class="pagination">
 
-                        <span class="pagination-info" id="pagination-info">
-                        </span>
+                        <span class="pagination-info" id="pagination-info"></span>
 
-
-                        <div class="pagination-buttons" id="pagination-buttons">
-                        </div>
+                        <div class="pagination-buttons" id="pagination-buttons"></div>
 
                     </div>
 
@@ -239,8 +183,7 @@
     </div>
 
 
-    <!-- ================= ALERT DETAILS DRAWER ================= -->
-
+    <!-- ALERT DETAILS DRAWER -->
     <aside class="alert-drawer" id="alert-drawer">
 
         <div class="drawer-header">
@@ -251,12 +194,9 @@
                     ALERT DETAILS
                 </span>
 
-                <h2 id="drawer-title">
-                    SSH Brute Force
-                </h2>
+                <h2 id="drawer-title"></h2>
 
             </div>
-
 
             <button class="drawer-close" id="drawer-close">
                 ×
@@ -264,28 +204,20 @@
 
         </div>
 
-
         <div class="drawer-content">
 
             <div class="drawer-badges">
 
-                <span class="severity high" id="drawer-severity">
-                    High
-                </span>
+                <span class="severity" id="drawer-severity"></span>
 
-                <span class="status-badge new" id="drawer-status">
-                    New
-                </span>
+                <span class="status-badge" id="drawer-status"></span>
 
             </div>
-
 
             <div class="alert-description" id="drawer-description">
             </div>
 
-
             <!-- ALERT INFORMATION -->
-
             <div class="alert-details-grid">
 
                 <div class="detail-item">
@@ -325,9 +257,7 @@
 
             </div>
 
-
             <!-- DETECTION LOGIC -->
-
             <div class="detection-section">
 
                 <h3>Detection Logic</h3>
@@ -337,55 +267,7 @@
 
             </div>
 
-
-            <!-- RELATED EVENTS -->
-
-            <div class="related-section">
-
-                <div class="related-header">
-
-                    <h3>Related Events</h3>
-
-                    <button id="view-related-events">
-                        View All
-                    </button>
-
-                </div>
-
-
-                <div class="related-events">
-
-                    <div class="related-row">
-                        <span>23:32:11</span>
-                        <strong>Failed SSH login</strong>
-                        <span>⋮</span>
-                    </div>
-
-                    <div class="related-row">
-                        <span>23:33:04</span>
-                        <strong>Failed SSH login</strong>
-                        <span>⋮</span>
-                    </div>
-
-                    <div class="related-row">
-                        <span>23:35:27</span>
-                        <strong>Failed SSH login</strong>
-                        <span>⋮</span>
-                    </div>
-
-                    <div class="related-row">
-                        <span>23:38:42</span>
-                        <strong>Failed SSH login</strong>
-                        <span>⋮</span>
-                    </div>
-
-                </div>
-
-            </div>
-
-
             <!-- ACTIONS -->
-
             <div class="drawer-actions">
 
                 <button class="investigate-btn" id="investigate-btn">
@@ -403,8 +285,7 @@
     </aside>
 
 
-    <!-- JavaScript -->
-
+    <!-- JAVASCRIPT -->
     <script src="../js/script.js"></script>
     <script src="../js/alerts.js"></script>
 
